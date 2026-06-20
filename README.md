@@ -1,5 +1,4 @@
-# xibo-cms Missing Authentication for Critical Function (CWE-306)
----
+## xibo-cms Missing Authentication for Critical Function (CWE-306)
 
 ## Overview:
 
