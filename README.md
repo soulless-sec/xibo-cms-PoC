@@ -24,6 +24,7 @@ The Entry Point The installer application is defined in web/install/index.php. I
 
 The Vulnerable Route In lib/routes-install.php, the handler for /{step} contains a switch statement. Notice that Step 1-3 have checks for $settingsExists, but Step 5 does not:
 
+```
 1 // File: lib/routes-install.php
 2 switch ($step) {
 3     case 1:
@@ -40,9 +41,11 @@ The Vulnerable Route In lib/routes-install.php, the handler for /{step} contains
 14 // VULNERABILITY: No check for $settingsExists here!
 15 $install->step5($request, $response);
 16 return $response->withRedirect(...);
+```
 
 The Database Update The step5 method in lib/Helper/Install.php takes input directly from the request and executes a raw SQL UPDATE on the database. It specifically targets UserID 1, which is the default ID for the Super Administrator:
 
+```
 1 // File: lib/Helper/Install.php
 2 public function step5(Request $request, Response $response) : Response {
 3     $sanitizedParams = $this->getSanitizer($request->getParams());
@@ -60,7 +63,7 @@ LIMIT 1');
 14 'password' => md5($password) // Note: Uses MD5 which is also an older security practice
 15 ));
 16 }
-
+```
 ---
 
 ## Impact:
@@ -82,6 +85,7 @@ The developers should implement a Global Guard at the beginning of the installer
 
 In lib/routes-install.php, add a check at the top of the route closure:
 
+```
 $app->map(['GET', 'POST'],'/{step}', function(Request $request, Response $response, $step = 1) use ($app) {
 // ...
 $settingsExists = file_exists(PROJECT_ROOT . '/web/settings.php');
@@ -91,6 +95,7 @@ if ($settingsExists && $step != 7) {
 throw new InstallationError("Access Denied: CMS is already installed.");
 }
 // ...
+```
 
 Additionally, the installer should use a more secure hashing algorithm (like Bcrypt) instead of MD5 for the initial password setup.
 
