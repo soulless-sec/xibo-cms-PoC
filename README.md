@@ -2,11 +2,11 @@
 
 # Overview:
 
-• Vulnerability Name: Unauthenticated Administrative Password Reset in /install Routes
-• Target Software: Xibo CMS (v4.4.4)
-• Severity: CRITICAL (9.8/10)
-• Vulnerability Type: Missing Authentication for Critical Function (CWE-306)
-• Status: Verified via Proof of Concept (PoC)
+- Vulnerability Name: Unauthenticated Administrative Password Reset in /install Routes
+- Target Software: Xibo CMS (v4.4.4)
+- Severity: CRITICAL (9.8/10)
+- Vulnerability Type: Missing Authentication for Critical Function (CWE-306)
+- Status: Verified via Proof of Concept (PoC)
 
 # Vulnerability Description:
 
