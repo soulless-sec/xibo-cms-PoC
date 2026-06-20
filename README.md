@@ -1,5 +1,5 @@
 # xibo-cms Missing Authentication for Critical Function (CWE-306)
---
+---
 
 ## Overview:
 
@@ -9,7 +9,7 @@
 - **Vulnerability Type**: Missing Authentication for Critical Function (CWE-306)
 - **Status**: Verified via Proof of Concept (PoC)
 
---
+---
 
 ## Vulnerability Description:
 
@@ -17,7 +17,7 @@ The Xibo CMS installer (accessible via /install/) contains a logic flaw that all
 
 While the installer correctly checks if the system is already installed during the initial steps (Steps 1, 2, and 3), it fails to perform these checks in the later steps. Specifically, Step 5 of the installer processes user-provided credentials and updates the database record for the main administrator (UserID 1) without requiring any session tokens, existing passwords, or verification that the installation is actually in progress.
 
---
+---
 
 ## Technical Analysis:
 
@@ -62,7 +62,7 @@ LIMIT 1');
 15 ));
 16 }
 
---
+---
 
 ## Impact:
 
@@ -73,7 +73,7 @@ An unauthenticated attacker can gain Full Administrative Control over the Xibo C
   - **Data Breach**: All media, datasets, and user information can be stolen.
   - **Persistence**: The attacker can create new admin accounts to maintain access even if the primary password is recovered.
 
---
+---
 
 ## Remediation Recommendation:
 
@@ -95,10 +95,10 @@ throw new InstallationError("Access Denied: CMS is already installed.");
 
 Additionally, the installer should use a more secure hashing algorithm (like Bcrypt) instead of MD5 for the initial password setup.
 
---
+---
 
 ## Researcher Information:
 
-**Name**: soulless
-**Date**: June 17, 2026
-**Verification**: Confirmed on local Docker laboratory environment.
+- **Name**: soulless
+- **Date**: June 17, 2026
+- **Verification**: Confirmed on local Docker laboratory environment.
