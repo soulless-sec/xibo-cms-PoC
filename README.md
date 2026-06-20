@@ -1,20 +1,25 @@
 # xibo-cms Missing Authentication for Critical Function (CWE-306)
+--
 
-# Overview:
+## Overview:
 
-- Vulnerability Name: Unauthenticated Administrative Password Reset in /install Routes
-- Target Software: Xibo CMS (v4.4.4)
-- Severity: CRITICAL (9.8/10)
-- Vulnerability Type: Missing Authentication for Critical Function (CWE-306)
-- Status: Verified via Proof of Concept (PoC)
+- **Vulnerability Name**: Unauthenticated Administrative Password Reset in /install Routes
+- **Target Software**: Xibo CMS (v4.4.4)
+- **Severity**: CRITICAL (9.8/10)
+- **Vulnerability Type**: Missing Authentication for Critical Function (CWE-306)
+- **Status**: Verified via Proof of Concept (PoC)
 
-# Vulnerability Description:
+--
+
+## Vulnerability Description:
 
 The Xibo CMS installer (accessible via /install/) contains a logic flaw that allows any user on the internet to reset the primary administrator's password.
 
 While the installer correctly checks if the system is already installed during the initial steps (Steps 1, 2, and 3), it fails to perform these checks in the later steps. Specifically, Step 5 of the installer processes user-provided credentials and updates the database record for the main administrator (UserID 1) without requiring any session tokens, existing passwords, or verification that the installation is actually in progress.
 
-# Technical Analysis:
+--
+
+## Technical Analysis:
 
 The Entry Point The installer application is defined in web/install/index.php. It uses the Slim framework to handle routes defined in lib/routes-install.php.
 
@@ -57,20 +62,24 @@ LIMIT 1');
 15 ));
 16 }
 
-# Impact:
+--
+
+## Impact:
 
 An unauthenticated attacker can gain Full Administrative Control over the Xibo CMS.
 
-  • System Takeover: The attacker can change the admin username and password.
-  • RCE on Players: Once logged in, an attacker can use the "Shell Command" module to execute arbitrary code on all connected digital signage displays (Players).
-  • Data Breach: All media, datasets, and user information can be stolen.
-  • Persistence: The attacker can create new admin accounts to maintain access even if the primary password is recovered.
+  - **System Takeover**: The attacker can change the admin username and password.
+  - **RCE on Players**: Once logged in, an attacker can use the "Shell Command" module to execute arbitrary code on all connected digital signage displays (Players).
+  - **Data Breach**: All media, datasets, and user information can be stolen.
+  - **Persistence**: The attacker can create new admin accounts to maintain access even if the primary password is recovered.
 
-# Remediation Recommendation:
+--
+
+## Remediation Recommendation:
 
 The developers should implement a Global Guard at the beginning of the installer route handler.
 
-Proposed Fix:
+**Proposed Fix**:
 
 In lib/routes-install.php, add a check at the top of the route closure:
 
@@ -86,8 +95,10 @@ throw new InstallationError("Access Denied: CMS is already installed.");
 
 Additionally, the installer should use a more secure hashing algorithm (like Bcrypt) instead of MD5 for the initial password setup.
 
-# Researcher Information:
+--
 
-Name: soulless
-Date: June 17, 2026
-Verification: Confirmed on local Docker laboratory environment.
+## Researcher Information:
+
+**Name**: soulless
+**Date**: June 17, 2026
+**Verification**: Confirmed on local Docker laboratory environment.
